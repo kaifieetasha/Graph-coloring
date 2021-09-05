@@ -59,6 +59,12 @@ def goal(points):
     return (1 / len(set([p.color for p in points]))) * 2
 
 
+def fitness(goal):
+    if goal < 0:
+        return -(1 / goal) / 2
+    return goal
+
+
 def generateGraph(n):
     points = [Point(0, []) for i in range(0, n)]
     i = 0
@@ -98,7 +104,7 @@ def wspinaczka(points, variant='random'):
             new_points = newPoints(points, 200000)
             if goal(new_points) > goal(points):
                 points = new_points
-
+        # po kolei w celu znalezienia najlepszego rozwiązania
     elif variant == 'determine':
         print('Wspinaczka deterministyczna\n')
         new_points = [p.copy() for p in points]
@@ -119,7 +125,7 @@ def wyżarzanie(points):
             rho = exp(-costDifference / temperature)
             if random() <= rho:
                 points = new_points
-        print('Temperatura :', "{:.2f}".format(temperature), 'Ocena :', "{:.2f}".format(goal(points)))
+        print('Temperatura :', "{:.2f}".format(temperature), 'Ocena :', "{:.2f}".format(fitness(goal(points))))
         temperature -= 0.005
     return points
 
@@ -156,11 +162,11 @@ if __name__ == "__main__":
     print('Przed optymalizacją: ')
     describePoints(points)
 
-    print('\nRozpoczynam algorytm wspinaczkowy')
-    points = wspinaczka(points, 'random')
+    # print('\nRozpoczynam algorytm wspinaczkowy')
+    # points = wspinaczka(points, 'random')
 
-    # print('\nRozpoczynam algorytm symulowanego wyżarzanie')
-    # points = wyżarzanie(points)
+    print('\nRozpoczynam algorytm symulowanego wyżarzanie')
+    points = wyżarzanie(points)
 
     print('Po optymalizacji:')
     describePoints(points)
